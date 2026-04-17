@@ -10,17 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Demo password used in various places.
+DEMO_PASSWORD = os.environ.get("DHSE_DEMO_PASSWORD", "Demo.123")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-jl0tn-l-pzp+lycj5nxe4=yc9tfuo154-)(8)p!#80d_u3ht!*"
+SECRET_KEY = "no-secret"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -72,11 +75,21 @@ WSGI_APPLICATION = "example.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+_POSTGRES_DATABASE = os.environ.get("DHSE_POSTGRES_DATABASE", "dhse")
+_POSTGRES_HOST = os.environ.get("DHSE_POSTGRES_HOST", "localhost")
+_POSTGRES_PASSWORD = os.environ.get("DHSE_POSTGRES_PASSWORD", DEMO_PASSWORD)
+_POSTGRES_PORT = int(os.environ.get("DHSE_POSTGRES_PORT", str(5438)))
+_POSTGRES_USERNAME = os.environ.get("DHSE_POSTGRES_USERNAME", "dhse")
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": _POSTGRES_DATABASE,
+        "USER": _POSTGRES_USERNAME,
+        "PASSWORD": _POSTGRES_PASSWORD,
+        "HOST": _POSTGRES_HOST,
+        "PORT": _POSTGRES_PORT,
+    },
 }
 
 

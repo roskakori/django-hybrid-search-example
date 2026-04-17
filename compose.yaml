@@ -1,0 +1,29 @@
+# Django hybrid search example
+services:
+  ollama:
+    container_name: "dhse_ollama"
+    image: ollama/ollama:0.20.7
+    volumes:
+      - dhse_ollama_data:/root/.ollama
+    ports:
+      - "11438:11434"
+    env_file:
+      - "./.env"
+
+  postgres:
+    container_name: "dhse_postgres"
+    image: "pgvector/pgvector:pg18"
+    volumes:
+      - dhse_postgres_data:/var/lib/postgresql
+    ports:
+      - "${DHSE_POSTGRES_PORT:-5438}:5432"
+    environment:
+      POSTGRES_USER: "${DHSE_POSTGRES_USERNAME:-dhse}"
+      POSTGRES_PASSWORD: "${DHSE_POSTGRES_PASSWORD:-Demo.123}"
+      POSTGRES_DB: "${DHSE_POSTGRES_DATABASE:-dhse}"
+    env_file:
+      - "./.env"
+
+volumes:
+  dhse_ollama_data:
+  dhse_postgres_data:
