@@ -25,17 +25,11 @@ addopts = """\
     --strict-config
     --strict-markers
     """
-filterwarnings = [
-    "default",
-    "ignore:.*datetime.datetime.utcnow.. is deprecated",
-    "ignore:.*'typing.ByteString' is deprecated",
-    "ignore:.*unclosed .socket.socket",  # TODO#984 Remove
-]
 minversion = "9.0"
 testpaths = [
     "tests",
 ]
-DJANGO_SETTINGS_MODULE = "siisurit.settings"
+DJANGO_SETTINGS_MODULE = "example.settings"
 
 [tool.ruff]
 exclude = [

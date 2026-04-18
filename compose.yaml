@@ -23,6 +23,16 @@ services:
       POSTGRES_DB: "${DHSE_POSTGRES_DATABASE:-dhse}"
     env_file:
       - "./.env"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DHSE_POSTGRES_USERNAME} -d ${DHSE_POSTGRES_DATABASE}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
 
 volumes:
   dhse_ollama_data:

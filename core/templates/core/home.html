@@ -1,0 +1,73 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="stylesheet" href="{% static 'css/pico.min.css' %}" />
+    <title>Hello world!</title>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Search documents</h1>
+
+      <form method="get">
+        <label for="{{ form.term.id_for_label }}">Term</label>
+        {{ form.term }} {% if form.term.errors %}
+        <small>{{ form.term.errors }}</small>
+        {% endif %}
+
+        <div class="grid">
+          <div>
+            <fieldset>
+              <legend>Kind</legend>
+              {{ form.kind }}
+            </fieldset>
+          </div>
+          <div>
+            <fieldset>
+              <legend>Language</legend>
+              {{ form.iso_language }}
+            </fieldset>
+          </div>
+        </div>
+        <div>
+          <button type="submit">Search</button>
+        </div>
+      </form>
+
+      {% if form.is_valid %}
+      <h2>Results</h2>
+
+      {% if results %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>FTS rank</th>
+            <th>Sematic distance</th>
+            <th>Hybrid rank</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in results %}
+          <tr>
+            <td>
+              <a href="{% url 'admin:core_document_change' result.id %}">
+                {{ result.title }}
+              </a>
+            </td>
+            <td>{{ result.fts_rank }}</td>
+            <td>{{ result.semantic_distance }}</td>
+            <td>{{ result.hybrid_rank }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No matching documents were found.</p>
+      {% endif %} {% endif %}
+    </main>
+  </body>
+</html>

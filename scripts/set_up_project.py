@@ -34,13 +34,14 @@ if __name__ == "__main__":
     _run_command("🪝 Setting up pre-commit hooks", ["uv", "run", "prek", "install"])
     if not _DOT_ENV_PATH.exists():
         _log.info("⚙️ Creating default .env file")
+        demo_password = "Demo.123"
         _DOT_ENV_PATH.write_text(
             "".join(
                 [
-                    "DHSE_DEMO_PASSWORD=Demo.123\n",
+                    f"DHSE_DEMO_PASSWORD={demo_password}\n",
                     "DHSE_POSTGRES_DATABASE=dhse\n",
                     "DHSE_POSTGRES_HOST=localhost\n",
-                    "DHSE_POSTGRES_PASSWORD=DEMO_PASSWORD\n",
+                    f"DHSE_POSTGRES_PASSWORD={demo_password}\n",
                     "DHSE_POSTGRES_PORT=5438\n",
                     "DHSE_POSTGRES_USERNAME=dhse\n",
                 ]

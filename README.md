@@ -79,3 +79,22 @@ Run the server on a port of your choice, for example:
 ```bash
 uv run python manage.py runserver 8008
 ```
+
+## Resetting the database
+
+During experimenting, it can be useful to restart with a clean database and data model.
+
+To clear all the data in the database but preserve the data model and reload the migration data:
+
+```bash
+uv run python scripts/reset_database.py
+```
+
+To go a step further and even rebuild the database migrations from scratch:
+
+```bash
+rm -f core/migrations/0???_*.py && \
+uv run python scripts/reset_database.py && \
+uv run python manage.py makemigrations && \
+uv run python manage.py migrate
+```
