@@ -37,5 +37,5 @@ if __name__ == "__main__":
         ["createsuperuser", "--no-input", "--username", "admin", "--email", "admin@localhost"],
         env={"DJANGO_SUPERUSER_PASSWORD": demo_password},
     )
+    _run_manage_py("🚓 Adding any possibly missing migrations", ["makemigrations"])
     _log.info("✅ The database was reset successfully.")
-    _run_manage_py("🚓 Checking for possibly missing migrations", ["makemigrations", "--dry-run"])

@@ -2,7 +2,7 @@
 services:
   ollama:
     container_name: "dhse_ollama"
-    image: ollama/ollama:0.20.7
+    image: ollama/ollama:0.21.0
     volumes:
       - dhse_ollama_data:/root/.ollama
     ports:

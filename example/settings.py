@@ -79,6 +79,10 @@ INTERNAL_IPS = [
     "127.0.0.1",  # For Django debug toolbar.
 ]
 
+# Ollama
+OLLAMA_URL = os.environ.get("DHSE_OLLAMA_URL", "http://localhost:11438")
+
+
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
@@ -117,6 +121,42 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+
+# Logging
+# https://docs.djangoproject.com/en/5.1/topics/logging/
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "httpx": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+    },
+    "formatters": {
+        "standard": {
+            "format": "%(asctime)s [%(levelname)-8s] (%(module)s.%(funcName)s) %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+}
 
 
 # Internationalization

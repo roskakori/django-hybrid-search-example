@@ -16,7 +16,7 @@ class SearchForm(forms.Form):
     kind = forms.ChoiceField(
         choices=KIND_CHOICES,
         widget=forms.Select,
-        initial="full-text",
+        initial="plain",
     )
     iso_language = forms.ChoiceField(
         choices=models.IsoLanguage.choices,

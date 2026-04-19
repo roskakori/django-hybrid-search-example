@@ -21,3 +21,14 @@ def cleaned_words(value: str) -> set[str]:
             result.add(cleaned_word)
     result = result - {""}
     return result
+
+
+def shortened_text(text: str, max_length: int = 32) -> str:
+    assert max_length > 3
+    text_length = len(text)
+    if text_length <= max_length:
+        result = text
+    else:
+        ellipsis_index = max_length // 2
+        result = text[:ellipsis_index] + "…" + text[ellipsis_index - max_length + 1 :]
+    return result

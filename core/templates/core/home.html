@@ -10,6 +10,10 @@
   </head>
   <body>
     <main class="container">
+      <a href="{% url 'admin:core_document_changelist' %}">Documents</a> |
+      <a href="{% url 'admin:core_document_add' %}">Add document</a> |
+      <a href="{% url 'admin:index' %}">Admin</a>
+      <hr />
       <h1>Search documents</h1>
 
       <form method="get">

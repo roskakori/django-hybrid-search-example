@@ -3,8 +3,10 @@ from dataclasses import dataclass
 
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.db.models import F, Q
+from pgvector.django import CosineDistance
 
-from core.models import ISO_LANGUAGE_TO_TS_CONFIG_MAP, Document, IsoLanguage
+from core.models import ISO_LANGUAGE_TO_EMBEDDING_MODEL_MAP, ISO_LANGUAGE_TO_TS_CONFIG_MAP, Document, IsoLanguage
+from core.ollama_session import OllamaSession
 
 MAX_SEARCH_RESULT_COUNT = 20
 
@@ -58,3 +60,33 @@ def documents_matching_full_text_search(iso_language: IsoLanguage, term: str) ->
             content=document.content,
             fts_rank=document.rank,
         )
+
+
+def documents_matching_semantic_search(
+    ollama_session: OllamaSession, iso_language: IsoLanguage, term: str
+) -> list[DocumentFound]:
+    # Compute the semantic vector of the search term.
+    model = ISO_LANGUAGE_TO_EMBEDDING_MODEL_MAP[iso_language]
+    term_vector = ollama_session.embed(model, term)
+
+    documents_found = (
+        Document.objects.only("iso_language", "title", "content")
+        .annotate(
+            semantic_distance=CosineDistance("semantic_vector", term_vector),
+        )
+        .filter(iso_language=iso_language)
+        .order_by("semantic_distance")[:MAX_SEARCH_RESULT_COUNT]
+    )
+
+    # We can't do a `yield` here because the ollama_session gets closed after the function returns the generator,
+    # and the `ollama_session.embed()` is only called the when the actual item is requested from the generator.
+    return [
+        DocumentFound(
+            id=document.id,
+            iso_language=IsoLanguage(document.iso_language),
+            semantic_distance=document.semantic_distance,
+            title=document.title,
+            content=document.content,
+        )
+        for document in documents_found
+    ]

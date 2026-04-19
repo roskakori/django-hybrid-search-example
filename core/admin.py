@@ -7,7 +7,7 @@ from .models import Document
 class DocumentAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("iso_language", "title", "content")}),
-        ("internal", {"fields": ("fts_vector",)}),
+        ("Internal", {"fields": ("fts_vector",)}),
     )
     list_display = ("iso_language", "title")
     list_display_links = ("title",)

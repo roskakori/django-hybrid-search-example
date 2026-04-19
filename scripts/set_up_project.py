@@ -36,14 +36,15 @@ if __name__ == "__main__":
         _log.info("⚙️ Creating default .env file")
         demo_password = "Demo.123"
         _DOT_ENV_PATH.write_text(
-            "".join(
+            "\n".join(
                 [
-                    f"DHSE_DEMO_PASSWORD={demo_password}\n",
-                    "DHSE_POSTGRES_DATABASE=dhse\n",
-                    "DHSE_POSTGRES_HOST=localhost\n",
-                    f"DHSE_POSTGRES_PASSWORD={demo_password}\n",
-                    "DHSE_POSTGRES_PORT=5438\n",
-                    "DHSE_POSTGRES_USERNAME=dhse\n",
+                    f"DHSE_DEMO_PASSWORD={demo_password}",
+                    "DHSE_OLLAMA_URL=http://localhost:11438",
+                    "DHSE_POSTGRES_DATABASE=dhse",
+                    "DHSE_POSTGRES_HOST=localhost",
+                    f"DHSE_POSTGRES_PASSWORD={demo_password}",
+                    "DHSE_POSTGRES_PORT=5438",
+                    "DHSE_POSTGRES_USERNAME=dhse",
                 ]
             )
         )

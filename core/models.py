@@ -2,8 +2,10 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.db import models
 from django.db.models import Case, TextChoices, When
+from pgvector.django import HnswIndex, VectorField
 
 MAX_TITLE_LENGTH = 200
+OLLAMA_VECTOR_SIZE = 768
 
 
 class IsoLanguage(TextChoices):
@@ -54,7 +56,7 @@ ISO_LANGUAGE_TO_EMBEDDING_MODEL_MAP = {
 
 
 class Document(models.Model):
-    iso_language: IsoLanguage = models.CharField(
+    iso_language: str = models.CharField(
         choices=IsoLanguage.choices, default=IsoLanguage.OTHER, max_length=2, verbose_name="ISO language"
     )
     title: str = models.CharField(blank=True, default="", max_length=MAX_TITLE_LENGTH)
@@ -80,9 +82,32 @@ class Document(models.Model):
         db_persist=True,
         verbose_name="vector for full-text search",
     )
+    semantic_vector: list[float] = VectorField(
+        default=None,
+        null=True,
+        dimensions=OLLAMA_VECTOR_SIZE,
+        editable=False,
+        verbose_name="vector for semantic search",
+    )
 
     class Meta:
-        indexes = [GinIndex(fields=["fts_vector"], name="%(app_label)s_%(class)s_fts_vector_idx")]
+        indexes = [
+            # Index for full-text search.
+            GinIndex(fields=["fts_vector"], name="%(app_label)s_%(class)s_fts_vector_idx"),
+            # Index for semantic search.
+            # For an in-depth explanation of HNSW indexes, read the article
+            # "HNSW Indexes with Postgres and pgvector" at
+            # <https://www.crunchydata.com/blog/hnsw-indexes-with-postgres-and-pgvector>.
+            # In particular, it explains the meaning of the `m` and
+            # `ef_construction` parameters.
+            HnswIndex(
+                name="%(app_label)s_%(class)s_distance_idx",
+                fields=["semantic_vector"],
+                m=16,
+                ef_construction=64,
+                opclasses=["vector_cosine_ops"],
+            ),
+        ]
 
     def __str__(self):
         return self.title
@@ -95,7 +120,7 @@ class Document(models.Model):
 
 
 class DocumentWithSingleFtsField(models.Model):
-    iso_language: IsoLanguage = models.CharField(default=IsoLanguage.OTHER, max_length=2, choices=IsoLanguage.choices)
+    iso_language: str = models.CharField(default=IsoLanguage.OTHER, max_length=2, choices=IsoLanguage.choices)
     title: str = models.CharField(blank=True, default="", max_length=MAX_TITLE_LENGTH)
     content: str = models.TextField(blank=True, default="")
     fts_vector = models.GeneratedField(
@@ -116,7 +141,7 @@ class DocumentWithSingleFtsField(models.Model):
 
 
 class DocumentFtsWithoutLoop(models.Model):
-    iso_language: IsoLanguage = models.CharField(default=IsoLanguage.OTHER, max_length=2, choices=IsoLanguage.choices)
+    iso_language: str = models.CharField(default=IsoLanguage.OTHER, max_length=2, choices=IsoLanguage.choices)
     title: str = models.CharField(blank=True, default="", max_length=MAX_TITLE_LENGTH)
     fts_vector = models.GeneratedField(
         expression=Case(
