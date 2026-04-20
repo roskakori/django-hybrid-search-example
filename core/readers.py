@@ -131,7 +131,7 @@ def documents_matching_hybrid_search(
             DocumentFound(
                 id=document_found_id,
                 iso_language=base_document_found.iso_language,
-                semantic_distance=semantic_document_found.semantic_distance,
+                semantic_distance=semantic_distance,
                 fts_rank=normalized_fts_rank,
                 hybrid_rank=hybrid_rank,
                 title=base_document_found.title,
