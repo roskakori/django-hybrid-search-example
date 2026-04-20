@@ -56,11 +56,21 @@ ISO_LANGUAGE_TO_EMBEDDING_MODEL_MAP = {
 
 
 class Document(models.Model):
-    iso_language: str = models.CharField(
-        choices=IsoLanguage.choices, default=IsoLanguage.OTHER, max_length=2, verbose_name="ISO language"
+    iso_language = models.CharField(
+        choices=IsoLanguage.choices,
+        default=IsoLanguage.OTHER,
+        max_length=2,
+        verbose_name="ISO language",
     )
-    title: str = models.CharField(blank=True, default="", max_length=MAX_TITLE_LENGTH)
-    content: str = models.TextField(blank=True, default="")
+    title = models.CharField(
+        blank=True,
+        default="",
+        max_length=MAX_TITLE_LENGTH,
+    )
+    content = models.TextField(
+        blank=True,
+        default="",
+    )
     fts_vector = models.GeneratedField(
         expression=Case(
             *[
