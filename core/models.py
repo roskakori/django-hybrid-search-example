@@ -58,7 +58,7 @@ ISO_LANGUAGE_TO_EMBEDDING_MODEL_MAP = {
 class Document(models.Model):
     iso_language = models.CharField(
         choices=IsoLanguage.choices,
-        default=IsoLanguage.OTHER,
+        default=IsoLanguage.ENGLISH,
         max_length=2,
         verbose_name="ISO language",
     )
