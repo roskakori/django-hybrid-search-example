@@ -80,6 +80,56 @@ Run the server on a port of your choice, for example:
 uv run python manage.py runserver 8008
 ```
 
+## Adding documents
+
+To add a document, use "Add document" in the navigation bar or the admin site.
+
+Alternatively, you can use the command line:
+
+```bash
+uv run python manage.py add_document en "fox & dog" "the quick brown fox jumped over the lazy white dog"
+```
+
+Use the `--file` option to interpret the CONTENT option as a file path, for example:
+
+```bash
+uv run python manage.py add_document --file  en "fox & dog" fox_and_dog.txt
+```
+
+This will read the `Document.content` from "fox_and_dog.txt".
+
+## Computing search vectors
+
+After adding a document, the full-text search vectors are automatically computed.
+
+The computation of the semantic search vectors has to be initiated manually:
+
+```bash
+uv run python manage.py update_all_document_sematic_vectors
+```
+
+This will update all documents that have no semantic search vector yet.
+
+To recompute the search vectors for all documents, including the ones that already have one, run:
+
+```bash
+uv run python manage.py update_all_document_sematic_vectors --force
+```
+
+## Removing all documents
+
+To remove all documents from the database:
+
+```bash
+uv run python manage.py remove_all_documents
+```
+
+To remove only German documents:
+
+```bash
+uv run python manage.py remove_all_documents de
+```
+
 ## Resetting the database
 
 During experimenting, it can be useful to restart with a clean database and data model.
